@@ -298,7 +298,8 @@
               </div>
             </template>
 
-            <template #cell-date="{ value }">
+            <!-- ⭐ ESTE ES EL SLOT CRÍTICO QUE NECESITAS AGREGAR/VERIFICAR -->
+            <template #cell-createdAt="{ value }">
               <div class="text-sm text-gray-600">{{ formatDate(value) }}</div>
             </template>
 
@@ -456,6 +457,7 @@ import CardContent from "@/components/ui/CardContent.vue";
 import DataTable from "@/components/ui/DataTable.vue";
 import Badge from "@/components/ui/Badge.vue";
 import { Patient } from "@/types";
+import { formatDateTime } from "@/utils/timeFormatter";
 
 @Component({
   components: {
@@ -484,6 +486,12 @@ export default class Patients extends Vue {
 
   async mounted(): Promise<void> {
     await this.fetchPatients();
+
+    // 🔍 Debug: Ver la estructura real de los datos
+    if (this.patients.length > 0) {
+      console.log("Primer paciente:", this.patients[0]);
+      console.log("Campos disponibles:", Object.keys(this.patients[0]));
+    }
   }
 
   get loading(): boolean {
@@ -529,13 +537,9 @@ export default class Patients extends Vue {
     return (nombre.charAt(0) + apellidos.charAt(0)).toUpperCase();
   }
 
+  // ⭐ REEMPLAZAR ESTE MÉTODO
   formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("es-ES", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+    return formatDateTime(dateString);
   }
 
   truncateText(text: string | undefined, maxLength: number): string {
