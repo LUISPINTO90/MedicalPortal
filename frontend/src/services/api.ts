@@ -79,6 +79,73 @@ class ApiService {
     return response.data;
   }
 
+  // Métodos de citas
+  async getAppointments(params?: any) {
+    const response = await this.api.get("/appointments", { params });
+    return response.data;
+  }
+
+  async getAppointment(id: number) {
+    const response = await this.api.get(`/appointments/${id}`);
+    return response.data;
+  }
+
+  async createAppointment(appointmentData: any) {
+    const response = await this.api.post("/appointments", appointmentData);
+    return response.data;
+  }
+
+  async updateAppointment(id: number, appointmentData: any) {
+    const response = await this.api.put(`/appointments/${id}`, appointmentData);
+    return response.data;
+  }
+
+  async deleteAppointment(id: number) {
+    const response = await this.api.delete(`/appointments/${id}`);
+    return response.data;
+  }
+
+  async getAppointmentsByPatient(patientId: number) {
+    const response = await this.api.get(`/appointments/patient/${patientId}`);
+    return response.data;
+  }
+
+  // Métodos de tratamientos
+  async getTreatments(params?: any) {
+    const response = await this.api.get("/treatments", { params });
+    return response.data;
+  }
+
+  async getTreatment(id: number) {
+    const response = await this.api.get(`/treatments/${id}`);
+    return response.data;
+  }
+
+  async createTreatment(treatmentData: any) {
+    const response = await this.api.post("/treatments", treatmentData);
+    return response.data;
+  }
+
+  async updateTreatment(id: number, treatmentData: any) {
+    const response = await this.api.put(`/treatments/${id}`, treatmentData);
+    return response.data;
+  }
+
+  async deleteTreatment(id: number) {
+    const response = await this.api.delete(`/treatments/${id}`);
+    return response.data;
+  }
+
+  async getTreatmentsByPatient(patientId: number) {
+    const response = await this.api.get(`/treatments/patient/${patientId}`);
+    return response.data;
+  }
+
+  async toggleTreatmentStatus(id: number) {
+    const response = await this.api.patch(`/treatments/${id}/toggle-status`);
+    return response.data;
+  }
+
   // Método genérico
   async request(config: AxiosRequestConfig) {
     const response = await this.api.request(config);
