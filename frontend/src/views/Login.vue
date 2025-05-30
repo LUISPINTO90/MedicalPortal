@@ -110,18 +110,17 @@
         </CardContent>
       </Card>
 
+      <!-- Register Link -->
       <Card class="bg-muted/50">
         <CardContent class="pt-6">
           <div class="text-center space-y-2">
-            <p class="text-sm font-medium">Credenciales de prueba:</p>
-            <div class="space-y-1">
-              <p class="text-sm text-muted-foreground">
-                <strong class="text-foreground">Email:</strong> admin@test.com
-              </p>
-              <p class="text-sm text-muted-foreground">
-                <strong class="text-foreground">Contraseña:</strong> admin123
-              </p>
-            </div>
+            <p class="text-sm text-muted-foreground">¿No tienes cuenta?</p>
+            <router-link
+              to="/register"
+              class="text-sm font-medium text-primary hover:text-primary/80 underline-offset-4 hover:underline transition-colors"
+            >
+              Regístrate aquí
+            </router-link>
           </div>
         </CardContent>
       </Card>
