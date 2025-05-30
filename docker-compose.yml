@@ -1,6 +1,9 @@
+version: "3.8"
+
 services:
   postgres:
     image: postgres:15-alpine
+    container_name: medicalportal-postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password123
@@ -11,29 +14,40 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - medical_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d medical_portal"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    container_name: medicalportal-backend
     ports:
       - "3001:3001"
     environment:
       DATABASE_URL: "postgresql://postgres:password123@postgres:5432/medical_portal?schema=public"
       JWT_SECRET: "mi-clave-super-secreta-jwt-2024-medical-portal-12345-abcdef"
       PORT: 3001
+      NODE_ENV: production
       FRONTEND_URL: "http://localhost:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     volumes:
-      - ./backend/uploads:/app/uploads
+      - backend_uploads:/app/uploads
     networks:
       - medical_network
+    restart: unless-stopped
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    container_name: medicalportal-frontend
     ports:
       - "8080:8080"
     environment:
@@ -42,9 +56,11 @@ services:
       - backend
     networks:
       - medical_network
+    restart: unless-stopped
 
 volumes:
   postgres_data:
+  backend_uploads:
 
 networks:
   medical_network:
