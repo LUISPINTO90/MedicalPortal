@@ -486,12 +486,6 @@ export default class Patients extends Vue {
 
   async mounted(): Promise<void> {
     await this.fetchPatients();
-
-    // 🔍 Debug: Ver la estructura real de los datos
-    if (this.patients.length > 0) {
-      console.log("Primer paciente:", this.patients[0]);
-      console.log("Campos disponibles:", Object.keys(this.patients[0]));
-    }
   }
 
   get loading(): boolean {
@@ -537,7 +531,6 @@ export default class Patients extends Vue {
     return (nombre.charAt(0) + apellidos.charAt(0)).toUpperCase();
   }
 
-  // ⭐ REEMPLAZAR ESTE MÉTODO
   formatDate(dateString: string): string {
     return formatDateTime(dateString);
   }
