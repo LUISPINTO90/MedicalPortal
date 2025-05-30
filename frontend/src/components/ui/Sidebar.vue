@@ -57,6 +57,7 @@
         <!-- Navigation -->
         <div class="flex-1 px-3 py-2">
           <nav class="grid items-start gap-2 text-sm font-medium">
+            <!-- Dashboard -->
             <router-link
               to="/dashboard"
               :class="getSidebarItemClass('Dashboard')"
@@ -84,6 +85,7 @@
               Dashboard
             </router-link>
 
+            <!-- Pacientes -->
             <router-link
               to="/patients"
               :class="getSidebarItemClass('Patients')"
@@ -103,10 +105,22 @@
                 ></path>
               </svg>
               Pacientes
+              <div class="ml-auto">
+                <Badge
+                  v-if="totalPatientsCount > 0"
+                  variant="secondary"
+                  class="text-xs bg-blue-100 text-blue-800 min-w-[20px] h-5 flex items-center justify-center rounded-full px-2"
+                >
+                  {{ totalPatientsCount }}
+                </Badge>
+              </div>
             </router-link>
 
-            <div
-              class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary cursor-not-allowed opacity-50 overflow-hidden"
+            <!-- Citas -->
+            <router-link
+              to="/appointments"
+              :class="getSidebarItemClass('Appointments')"
+              @click="handleNavClick"
             >
               <svg
                 class="h-4 w-4"
@@ -118,17 +132,26 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M8 7V3a4 4 0 118 0v4m-4 11V10"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 ></path>
               </svg>
               Citas
-              <Badge variant="secondary" class="ml-auto text-xs"
-                >Próximamente</Badge
-              >
-            </div>
+              <div class="ml-auto">
+                <Badge
+                  v-if="totalAppointmentsCount > 0"
+                  variant="secondary"
+                  class="text-xs bg-green-100 text-green-800 min-w-[20px] h-5 flex items-center justify-center rounded-full px-2"
+                >
+                  {{ totalAppointmentsCount }}
+                </Badge>
+              </div>
+            </router-link>
 
-            <div
-              class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary cursor-not-allowed opacity-50 overflow-hidden"
+            <!-- Tratamientos -->
+            <router-link
+              to="/treatments"
+              :class="getSidebarItemClass('Treatments')"
+              @click="handleNavClick"
             >
               <svg
                 class="h-4 w-4"
@@ -144,10 +167,16 @@
                 ></path>
               </svg>
               Tratamientos
-              <Badge variant="secondary" class="ml-auto text-xs"
-                >Próximamente</Badge
-              >
-            </div>
+              <div class="ml-auto">
+                <Badge
+                  v-if="totalTreatmentsCount > 0"
+                  variant="secondary"
+                  class="text-xs bg-purple-100 text-purple-800 min-w-[20px] h-5 flex items-center justify-center rounded-full px-2"
+                >
+                  {{ totalTreatmentsCount }}
+                </Badge>
+              </div>
+            </router-link>
           </nav>
         </div>
 
@@ -247,14 +276,60 @@ import Badge from "@/components/ui/Badge.vue";
 export default class Sidebar extends Vue {
   isOpen = false;
   isMobile = false;
+  dataLoaded = false;
 
-  mounted() {
+  async mounted() {
     this.checkIsMobile();
     window.addEventListener("resize", this.checkIsMobile);
+
+    // 🔥 CARGAR DATOS AUTOMÁTICAMENTE AL MONTAR EL COMPONENTE
+    await this.loadAllData();
   }
 
   beforeDestroy() {
     window.removeEventListener("resize", this.checkIsMobile);
+  }
+
+  // 🚀 Método para cargar todos los datos necesarios
+  async loadAllData() {
+    try {
+      // Solo cargar si el usuario está autenticado y los datos no están cargados
+      if (this.currentUser && !this.dataLoaded) {
+        console.log("🔄 Cargando datos del sidebar...");
+
+        await Promise.all([
+          this.loadPatientsIfNeeded(),
+          this.loadAppointmentsIfNeeded(),
+          this.loadTreatmentsIfNeeded(),
+        ]);
+
+        this.dataLoaded = true;
+        console.log("✅ Datos del sidebar cargados");
+      }
+    } catch (error) {
+      console.error("❌ Error cargando datos del sidebar:", error);
+    }
+  }
+
+  // Cargar pacientes solo si no están cargados
+  async loadPatientsIfNeeded() {
+    if (this.$store.getters.allPatients.length === 0) {
+      await this.$store.dispatch("fetchPatients");
+    }
+  }
+
+  // Cargar citas solo si no están cargadas
+  async loadAppointmentsIfNeeded() {
+    if (this.$store.getters.allAppointments.length === 0) {
+      await this.$store.dispatch("fetchAppointments");
+    }
+  }
+
+  // Cargar tratamientos solo si no están cargados
+  async loadTreatmentsIfNeeded() {
+    if (this.$store.getters.allTreatments.length === 0) {
+      await this.$store.dispatch("fetchTreatments");
+    }
   }
 
   checkIsMobile() {
@@ -273,12 +348,31 @@ export default class Sidebar extends Vue {
     return this.currentUser.email.charAt(0).toUpperCase();
   }
 
+  // 📊 CONTADORES SIMPLIFICADOS PARA LOS BADGES
+  get totalPatientsCount(): number {
+    return this.$store.getters.allPatients.length;
+  }
+
+  get totalAppointmentsCount(): number {
+    return this.$store.getters.allAppointments.length;
+  }
+
+  get totalTreatmentsCount(): number {
+    return this.$store.getters.allTreatments.length;
+  }
+
   get pageTitle(): string {
     const routeNames: { [key: string]: string } = {
       Dashboard: "Dashboard",
       Patients: "Gestión de Pacientes",
       NewPatient: "Nuevo Paciente",
       EditPatient: "Editar Paciente",
+      Appointments: "Gestión de Citas",
+      NewAppointment: "Nueva Cita",
+      EditAppointment: "Editar Cita",
+      Treatments: "Gestión de Tratamientos",
+      NewTreatment: "Nuevo Tratamiento",
+      EditTreatment: "Editar Tratamiento",
     };
 
     return routeNames[this.$route.name as string] || "Portal Médico";
@@ -296,7 +390,11 @@ export default class Sidebar extends Vue {
     const isActive =
       this.$route.name === routeName ||
       (routeName === "Patients" &&
-        this.$route.name?.toString().includes("Patient"));
+        this.$route.name?.toString().includes("Patient")) ||
+      (routeName === "Appointments" &&
+        this.$route.name?.toString().includes("Appointment")) ||
+      (routeName === "Treatments" &&
+        this.$route.name?.toString().includes("Treatment"));
 
     return isActive
       ? "flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary overflow-hidden"
