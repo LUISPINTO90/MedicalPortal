@@ -15,7 +15,9 @@ export interface Patient {
   tipoSangre: string;
   sexo: string;
   observaciones?: string;
-  pdfPath?: string;
+  pdfPath?: string; // Mantener por compatibilidad
+  pdfData?: string; // PDF en base64
+  pdfName?: string; // Nombre original del archivo
   createdAt: string;
   updatedAt: string;
 }

@@ -298,7 +298,77 @@
               </div>
             </template>
 
-            <!-- ⭐ ESTE ES EL SLOT CRÍTICO QUE NECESITAS AGREGAR/VERIFICAR -->
+            <!-- ⭐ NUEVA COLUMNA DE PDF -->
+            <template #cell-pdf="{ item }">
+              <div class="flex items-center justify-center">
+                <div
+                  v-if="item.pdfData && item.pdfName"
+                  @click="openPdfInNewTab(item.pdfData, item.pdfName)"
+                  class="cursor-pointer group"
+                  :title="`Ver ${item.pdfName}`"
+                >
+                  <!-- PDF Preview -->
+                  <div class="relative">
+                    <div
+                      class="w-12 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105"
+                    >
+                      <svg
+                        class="w-6 h-6 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M7 2v2H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V2h-2v2H9V2H7zM4 8h16v10H4V8zm2 2v2h2v-2H6zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm-8 4v2h2v-2H6zm4 0v2h2v-2h-2z"
+                        />
+                      </svg>
+                    </div>
+                    <!-- PDF Icon Badge -->
+                    <div
+                      class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center"
+                    >
+                      <svg
+                        class="w-2 h-2 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <!-- Tooltip -->
+                  <div
+                    class="mt-1 text-xs text-center text-gray-600 group-hover:text-blue-600 transition-colors"
+                  >
+                    PDF
+                  </div>
+                </div>
+                <div v-else class="text-center">
+                  <div
+                    class="w-12 h-16 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300"
+                  >
+                    <svg
+                      class="w-6 h-6 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div class="mt-1 text-xs text-center text-gray-400">
+                    Sin PDF
+                  </div>
+                </div>
+              </div>
+            </template>
+
             <template #cell-createdAt="{ value }">
               <div class="text-sm text-gray-600">{{ formatDate(value) }}</div>
             </template>
@@ -481,6 +551,7 @@ export default class Patients extends Vue {
     { key: "curp", title: "CURP" },
     { key: "contact", title: "Contacto" },
     { key: "medical", title: "Info. Médica" },
+    { key: "pdf", title: "Documento" },
     { key: "createdAt", title: "Fecha Registro" },
   ];
 
@@ -540,6 +611,44 @@ export default class Patients extends Vue {
     return text.length > maxLength
       ? text.substring(0, maxLength) + "..."
       : text;
+  }
+
+  // ⭐ NUEVO MÉTODO PARA ABRIR PDF
+  openPdfInNewTab(pdfData: string, fileName: string): void {
+    try {
+      // Convertir base64 a blob
+      const byteCharacters = atob(pdfData);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "application/pdf" });
+
+      // Crear URL del blob
+      const url = URL.createObjectURL(blob);
+
+      // Abrir en nueva pestaña
+      const newTab = window.open(url, "_blank");
+
+      // Opcional: Limpiar la URL después de un tiempo
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000);
+
+      if (!newTab) {
+        // Si no se pudo abrir la nueva pestaña, descargar el archivo
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (error) {
+      console.error("Error al abrir PDF:", error);
+      this.$store.commit("setError", "Error al abrir el documento PDF");
+    }
   }
 
   confirmDelete(patient: Patient): void {
