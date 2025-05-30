@@ -76,8 +76,9 @@
               Pacientes
             </router-link>
 
-            <div
-              class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary cursor-not-allowed opacity-50"
+            <router-link
+              to="/appointments"
+              :class="getSidebarItemClass('Appointments')"
             >
               <svg
                 class="h-4 w-4"
@@ -89,17 +90,15 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M8 7V3a4 4 0 118 0v4m-4 11V10"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 ></path>
               </svg>
               Citas
-              <Badge variant="secondary" class="ml-auto text-xs"
-                >Próximamente</Badge
-              >
-            </div>
+            </router-link>
 
-            <div
-              class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary cursor-not-allowed opacity-50"
+            <router-link
+              to="/treatments"
+              :class="getSidebarItemClass('Treatments')"
             >
               <svg
                 class="h-4 w-4"
@@ -115,10 +114,7 @@
                 ></path>
               </svg>
               Tratamientos
-              <Badge variant="secondary" class="ml-auto text-xs"
-                >Próximamente</Badge
-              >
-            </div>
+            </router-link>
           </nav>
         </div>
 
@@ -189,13 +185,11 @@ import { Component, Vue } from "vue-property-decorator";
 import { User } from "@/types";
 import Button from "@/components/ui/Button.vue";
 import Card from "@/components/ui/Card.vue";
-import Badge from "@/components/ui/Badge.vue";
 
 @Component({
   components: {
     Button,
     Card,
-    Badge,
   },
 })
 export default class Layout extends Vue {
@@ -214,6 +208,12 @@ export default class Layout extends Vue {
       Patients: "Gestión de Pacientes",
       NewPatient: "Nuevo Paciente",
       EditPatient: "Editar Paciente",
+      Appointments: "Gestión de Citas",
+      NewAppointment: "Nueva Cita",
+      EditAppointment: "Editar Cita",
+      Treatments: "Gestión de Tratamientos",
+      NewTreatment: "Nuevo Tratamiento",
+      EditTreatment: "Editar Tratamiento",
     };
 
     return routeNames[this.$route.name as string] || "Portal Médico";
@@ -223,7 +223,11 @@ export default class Layout extends Vue {
     const isActive =
       this.$route.name === routeName ||
       (routeName === "Patients" &&
-        this.$route.name?.toString().includes("Patient"));
+        this.$route.name?.toString().includes("Patient")) ||
+      (routeName === "Appointments" &&
+        this.$route.name?.toString().includes("Appointment")) ||
+      (routeName === "Treatments" &&
+        this.$route.name?.toString().includes("Treatment"));
 
     return isActive
       ? "flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
