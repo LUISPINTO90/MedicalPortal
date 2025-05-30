@@ -242,15 +242,8 @@
 
             <template #cell-estatus="{ value }">
               <Badge
-                :class="{
-                  'bg-yellow-100 text-yellow-800 border-yellow-200':
-                    value === 'PENDIENTE',
-                  'bg-green-100 text-green-800 border-green-200':
-                    value === 'REALIZADA',
-                  'bg-red-100 text-red-800 border-red-200':
-                    value === 'CANCELADA',
-                }"
-                class="border"
+                :class="getStatusClasses(value)"
+                class="border transition-colors duration-200"
               >
                 {{ value }}
               </Badge>
@@ -271,10 +264,10 @@
                   size="sm"
                   @click="$router.push(`/appointments/${item.id}/edit`)"
                   title="Editar cita"
-                  class="h-9 w-9 p-0 hover:bg-green-50 hover:text-green-600"
+                  class="h-10 w-10 p-0 hover:bg-green-50 hover:text-green-600"
                 >
                   <svg
-                    class="h-4 w-4"
+                    class="h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -292,10 +285,10 @@
                   size="sm"
                   @click="confirmDelete(item)"
                   title="Eliminar cita"
-                  class="h-9 w-9 p-0 hover:bg-red-50 hover:text-red-600"
+                  class="h-10 w-10 p-0 hover:bg-red-50 hover:text-red-600"
                 >
                   <svg
-                    class="h-4 w-4"
+                    class="h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -505,6 +498,20 @@ export default class Appointments extends Vue {
 
   formatDate(dateString: string): string {
     return formatDate(dateString);
+  }
+
+  // ⭐ MÉTODO PARA OBTENER LAS CLASES DE COLOR SEGÚN EL ESTADO
+  getStatusClasses(status: string): string {
+    switch (status) {
+      case "PENDIENTE":
+        return "bg-orange-100 text-orange-800 border-orange-200 hover:bg-orange-200 hover:border-orange-300";
+      case "REALIZADA":
+        return "bg-green-600 text-green-800 border-green-200 hover:bg-green-500 hover:border-green-300";
+      case "CANCELADA":
+        return "bg-red-600 text-white border-red-700 hover:bg-red-400 hover:border-red-300";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200 hover:border-gray-300";
+    }
   }
 
   clearFilters(): void {

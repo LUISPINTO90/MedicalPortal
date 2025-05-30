@@ -281,14 +281,8 @@
             <template #cell-medical="{ item }">
               <div class="space-y-2">
                 <Badge
-                  :class="{
-                    'bg-red-100 text-red-800': item.tipoSangre?.includes('A'),
-                    'bg-blue-100 text-blue-800': item.tipoSangre?.includes('B'),
-                    'bg-purple-100 text-purple-800':
-                      item.tipoSangre?.includes('AB'),
-                    'bg-green-100 text-green-800':
-                      item.tipoSangre?.includes('O'),
-                  }"
+                  :class="getBloodTypeClasses(item.tipoSangre)"
+                  class="border transition-colors duration-200"
                 >
                   {{ item.tipoSangre }}
                 </Badge>
@@ -380,10 +374,10 @@
                   size="sm"
                   @click="$router.push(`/patients/${item.id}/edit`)"
                   title="Editar paciente"
-                  class="h-9 w-9 p-0 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                  class="h-10 w-10 p-0 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                 >
                   <svg
-                    class="h-4 w-4"
+                    class="h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -401,10 +395,10 @@
                   size="sm"
                   @click="confirmDelete(item)"
                   title="Eliminar paciente"
-                  class="h-9 w-9 p-0 hover:bg-red-50 hover:text-red-600 transition-colors"
+                  class="h-10 w-10 p-0 hover:bg-red-50 hover:text-red-600 transition-colors"
                 >
                   <svg
-                    class="h-4 w-4"
+                    class="h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -551,7 +545,7 @@ export default class Patients extends Vue {
     { key: "curp", title: "CURP" },
     { key: "contact", title: "Contacto" },
     { key: "medical", title: "Info. Médica" },
-    { key: "pdf", title: "Documento" },
+    { key: "pdf", title: "Documento" }, // ⭐ NUEVA COLUMNA
     { key: "createdAt", title: "Fecha Registro" },
   ];
 
@@ -611,6 +605,24 @@ export default class Patients extends Vue {
     return text.length > maxLength
       ? text.substring(0, maxLength) + "..."
       : text;
+  }
+
+  // ⭐ MÉTODO PARA OBTENER LAS CLASES DE COLOR DE TIPO DE SANGRE
+  getBloodTypeClasses(bloodType: string): string {
+    if (!bloodType)
+      return "bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200";
+
+    if (bloodType.includes("AB")) {
+      return "bg-purple-500 text-white border-purple-600 hover:bg-purple-600 hover:border-purple-700";
+    } else if (bloodType.includes("A")) {
+      return "bg-red-500 text-white border-red-600 hover:bg-red-600 hover:border-red-700";
+    } else if (bloodType.includes("B")) {
+      return "bg-blue-500 text-white border-blue-600 hover:bg-blue-600 hover:border-blue-700";
+    } else if (bloodType.includes("O")) {
+      return "bg-green-600 text-white border-green-600 hover:bg-green-500 hover:border-green-700";
+    }
+
+    return "bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200";
   }
 
   // ⭐ NUEVO MÉTODO PARA ABRIR PDF

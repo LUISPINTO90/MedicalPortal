@@ -275,12 +275,7 @@
             <template #cell-status="{ item }">
               <div class="flex items-center gap-2">
                 <Badge
-                  :class="{
-                    'bg-green-50 text-green-900 border-green-300 hover:bg-green-100':
-                      item.activo,
-                    'bg-purple-50 text-purple-800 border-purple-300 hover:bg-purple-100':
-                      !item.activo,
-                  }"
+                  :class="getStatusClasses(item.activo)"
                   class="border transition-colors duration-200 cursor-default"
                 >
                   {{ item.activo ? "ACTIVO" : "INACTIVO" }}
@@ -303,10 +298,10 @@
                   size="sm"
                   @click="$router.push(`/treatments/${item.id}/edit`)"
                   title="Editar tratamiento"
-                  class="h-9 w-9 p-0 hover:bg-purple-50 hover:text-purple-600"
+                  class="h-10 w-10 p-0 hover:bg-purple-50 hover:text-purple-600"
                 >
                   <svg
-                    class="h-4 w-4"
+                    class="h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -324,10 +319,10 @@
                   size="sm"
                   @click="confirmDelete(item)"
                   title="Eliminar tratamiento"
-                  class="h-9 w-9 p-0 hover:bg-red-50 hover:text-red-600"
+                  class="h-10 w-10 p-0 hover:bg-red-50 hover:text-red-600"
                 >
                   <svg
-                    class="h-4 w-4"
+                    class="h-5 w-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -554,6 +549,15 @@ export default class Treatments extends Vue {
 
   formatDate(dateString: string): string {
     return formatDate(dateString);
+  }
+
+  // ⭐ MÉTODO PARA OBTENER LAS CLASES DE COLOR SEGÚN EL ESTADO
+  getStatusClasses(isActive: boolean): string {
+    if (isActive) {
+      return "bg-green-600 text-green-800 border-green-200 hover:bg-green-500";
+    } else {
+      return "bg-purple-500 text-gray-800 border-gray-200 hover:bg-purple-400";
+    }
   }
 
   clearFilters(): void {
