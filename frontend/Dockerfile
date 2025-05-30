@@ -1,5 +1,5 @@
-# Build stage
-FROM node:18-alpine AS build-stage
+# frontend/Dockerfile
+FROM node:18-alpine
 
 WORKDIR /app
 
@@ -12,18 +12,8 @@ RUN npm ci
 # Copiar código fuente
 COPY . .
 
-# Compilar la aplicación
-RUN npm run build
-
-# Production stage
-FROM nginx:alpine AS production-stage
-
-# Copiar archivos construidos
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-
-# Copiar configuración personalizada de nginx
-COPY nginx.conf /etc/nginx/nginx.conf
-
+# Exponer puerto
 EXPOSE 8080
 
-CMD ["nginx", "-g", "daemon off;"]
+# Comando para desarrollo con hot reload
+CMD ["npm", "run", "serve", "--", "--host", "0.0.0.0", "--port", "8080"]
