@@ -21,6 +21,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // 🔥 RELACIONES CON DATOS DEL USUARIO
+  patients      Patient[]     // Un usuario tiene muchos pacientes
+  appointments  Appointment[] // Un usuario tiene muchas citas
+  treatments    Treatment[]   // Un usuario tiene muchos tratamientos
+
   @@map("users")
 }
 
@@ -40,5 +45,62 @@ model Patient {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
+  // 🔥 RELACIÓN CON USUARIO
+  userId         Int
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relaciones existentes
+  citas          Appointment[]
+  tratamientos   Treatment[]
+
   @@map("patients")
+}
+
+model Appointment {
+  id          Int      @id @default(autoincrement())
+  fecha       DateTime
+  hora        String   // HH:MM format
+  motivo      String
+  notas       String?
+  estatus     AppointmentStatus @default(PENDIENTE)
+  patientId   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 🔥 RELACIÓN CON USUARIO
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relación con paciente
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("appointments")
+}
+
+model Treatment {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  descripcion   String
+  fechaInicio   DateTime
+  duracion      String   // "30 días", "2 semanas", etc.
+  observaciones String?
+  activo        Boolean  @default(true)
+  patientId     Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // 🔥 RELACIÓN CON USUARIO
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relación con paciente
+  patient       Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("treatments")
+}
+
+enum AppointmentStatus {
+  PENDIENTE
+  REALIZADA
+  CANCELADA
 }
