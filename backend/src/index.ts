@@ -4,6 +4,8 @@ import helmet from "helmet";
 import path from "path";
 import authRoutes from "./routes/auth";
 import patientRoutes from "./routes/patients";
+import appointmentRoutes from "./routes/appointments";
+import treatmentRoutes from "./routes/treatments";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -25,6 +27,8 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 // Rutas
 app.use("/api/auth", authRoutes);
 app.use("/api/patients", patientRoutes);
+app.use("/api/appointments", appointmentRoutes);
+app.use("/api/treatments", treatmentRoutes);
 
 // Ruta de salud
 app.get("/api/health", (req, res) => {
