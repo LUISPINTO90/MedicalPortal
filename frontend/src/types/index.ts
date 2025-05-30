@@ -20,6 +20,45 @@ export interface Patient {
   updatedAt: string;
 }
 
+export interface Appointment {
+  id: number;
+  fecha: string;
+  hora: string;
+  motivo: string;
+  notas?: string;
+  estatus: "PENDIENTE" | "REALIZADA" | "CANCELADA";
+  patientId: number;
+  patient?: {
+    id: number;
+    nombre: string;
+    apellidos: string;
+    telefono: string;
+    email?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Treatment {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  fechaInicio: string;
+  duracion: string;
+  observaciones?: string;
+  activo: boolean;
+  patientId: number;
+  patient?: {
+    id: number;
+    nombre: string;
+    apellidos: string;
+    telefono: string;
+    email?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface LoginForm {
   email: string;
   password: string;
@@ -39,6 +78,25 @@ export interface PatientForm {
   pdf?: File;
 }
 
+export interface AppointmentForm {
+  fecha: string;
+  hora: string;
+  motivo: string;
+  notas?: string;
+  estatus: "PENDIENTE" | "REALIZADA" | "CANCELADA";
+  patientId: number;
+}
+
+export interface TreatmentForm {
+  nombre: string;
+  descripcion: string;
+  fechaInicio: string;
+  duracion: string;
+  observaciones?: string;
+  activo: boolean;
+  patientId: number;
+}
+
 export interface ApiResponse<T = any> {
   message: string;
   data?: T;
@@ -49,4 +107,14 @@ export interface AuthResponse {
   message: string;
   token: string;
   user: User;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
