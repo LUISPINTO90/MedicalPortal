@@ -5,6 +5,7 @@ import {
   updatePatientSchema,
 } from "../schemas/patientSchemas";
 import { AuthRequest } from "../middleware/auth";
+import fs from "fs";
 
 export const getAllPatients = async (
   req: AuthRequest,
@@ -82,16 +83,24 @@ export const createPatient = async (
     }
 
     // Procesar archivo PDF si existe
-    let pdfPath = null;
+    let pdfData = null;
+    let pdfName = null;
     if (req.file) {
-      pdfPath = req.file.path;
+      // Leer el archivo y convertirlo a base64
+      const fileBuffer = fs.readFileSync(req.file.path);
+      pdfData = fileBuffer.toString("base64");
+      pdfName = req.file.originalname;
+
+      // Eliminar el archivo temporal del disco
+      fs.unlinkSync(req.file.path);
     }
 
     const patient = await prisma.patient.create({
       data: {
         ...validatedData,
         email: validatedData.email || null,
-        pdfPath,
+        pdfData,
+        pdfName,
         userId, // 🔥 ASOCIAR AL USUARIO AUTENTICADO
       },
     });
@@ -158,9 +167,16 @@ export const updatePatient = async (
     }
 
     // Procesar archivo PDF si existe
-    let pdfPath = existingPatient.pdfPath;
+    let pdfData = existingPatient.pdfData;
+    let pdfName = existingPatient.pdfName;
     if (req.file) {
-      pdfPath = req.file.path;
+      // Leer el archivo y convertirlo a base64
+      const fileBuffer = fs.readFileSync(req.file.path);
+      pdfData = fileBuffer.toString("base64");
+      pdfName = req.file.originalname;
+
+      // Eliminar el archivo temporal del disco
+      fs.unlinkSync(req.file.path);
     }
 
     const { id: patientId, ...updateData } = validatedData;
@@ -170,7 +186,8 @@ export const updatePatient = async (
       data: {
         ...updateData,
         email: updateData.email || null,
-        pdfPath,
+        pdfData,
+        pdfName,
         // No actualizar userId - debe mantenerse el original
       },
     });

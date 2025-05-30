@@ -41,7 +41,9 @@ model Patient {
   tipoSangre     String
   sexo           String
   observaciones  String?
-  pdfPath        String?  // Ruta del archivo PDF
+  pdfPath        String?  // Mantener por compatibilidad (opcional)
+  pdfData        String?  // PDF en base64
+  pdfName        String?  // Nombre original del archivo
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
