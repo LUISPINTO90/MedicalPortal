@@ -106,7 +106,7 @@
             </router-link>
 
             <div
-              class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary cursor-not-allowed opacity-50"
+              class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary cursor-not-allowed opacity-50 overflow-hidden"
             >
               <svg
                 class="h-4 w-4"
@@ -128,7 +128,7 @@
             </div>
 
             <div
-              class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary cursor-not-allowed opacity-50"
+              class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary cursor-not-allowed opacity-50 overflow-hidden"
             >
               <svg
                 class="h-4 w-4"
@@ -170,10 +170,10 @@
                 size="sm"
                 @click="handleLogout"
                 title="Cerrar sesión"
-                class="h-8 w-8 p-0"
+                class="h-9 w-9 p-0"
               >
                 <svg
-                  class="h-4 w-4"
+                  class="h-5 w-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -299,8 +299,8 @@ export default class Sidebar extends Vue {
         this.$route.name?.toString().includes("Patient"));
 
     return isActive
-      ? "flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
-      : "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary";
+      ? "flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary overflow-hidden"
+      : "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:bg-muted/50 overflow-hidden";
   }
 
   openSidebar() {

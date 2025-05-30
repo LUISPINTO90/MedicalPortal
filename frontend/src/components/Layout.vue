@@ -141,10 +141,10 @@
                 size="sm"
                 @click="handleLogout"
                 title="Cerrar sesión"
-                class="h-8 w-8 p-0"
+                class="h-9 w-9 p-0"
               >
                 <svg
-                  class="h-4 w-4"
+                  class="h-5 w-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
