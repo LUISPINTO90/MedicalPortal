@@ -107,8 +107,12 @@ async function main() {
   const patients = [];
   for (const patientData of patientsData) {
     try {
-      const existingPatient = await prisma.patient.findUnique({
-        where: { curp: patientData.curp },
+      // ✅ CAMBIO: Usar findFirst con constraint compuesto (curp + userId)
+      const existingPatient = await prisma.patient.findFirst({
+        where: {
+          curp: patientData.curp,
+          userId: user.id,
+        },
       });
 
       if (!existingPatient) {
@@ -344,7 +348,7 @@ async function main() {
   console.log("\n🎉 ¡Seed completado exitosamente!");
   console.log("\n🔑 CREDENCIALES DE ACCESO:");
   console.log("📧 Email: admin@admin.com");
-  console.log("🔒 Password: admin");
+  console.log("🔒 Password: adminadmin");
 }
 
 main()
