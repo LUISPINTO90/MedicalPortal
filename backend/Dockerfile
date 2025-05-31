@@ -9,8 +9,8 @@ RUN apk add --no-cache postgresql-client
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Instalar dependencias
-RUN npm ci
+# Instalar TODAS las dependencias (incluyendo devDependencies para el build)
+RUN npm ci --include=dev
 
 # Copiar prisma schema
 COPY prisma ./prisma/
@@ -26,6 +26,9 @@ RUN npm run build
 
 # Crear directorio uploads
 RUN mkdir -p uploads
+
+# Limpiar devDependencies después del build
+RUN npm ci --only=production && npm cache clean --force
 
 # Exponer puerto
 EXPOSE 10000
