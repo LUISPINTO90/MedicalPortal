@@ -34,7 +34,7 @@ model Patient {
   nombre         String
   apellidos      String
   edad           Int
-  curp           String   @unique
+  curp           String
   telefono       String
   direccion      String
   email          String?

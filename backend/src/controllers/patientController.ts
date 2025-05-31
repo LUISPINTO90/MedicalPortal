@@ -5,18 +5,16 @@ import {
   updatePatientSchema,
 } from "../schemas/patientSchemas";
 import { AuthRequest } from "../middleware/auth";
-import fs from "fs";
 
 export const getAllPatients = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    // 🔥 FILTRAR POR USUARIO AUTENTICADO
     const userId = req.userId!;
 
     const patients = await prisma.patient.findMany({
-      where: { userId }, // Solo pacientes del usuario autenticado
+      where: { userId },
       orderBy: { createdAt: "desc" },
     });
 
@@ -39,7 +37,7 @@ export const getPatientById = async (
     const patient = await prisma.patient.findFirst({
       where: {
         id: parseInt(id),
-        userId, // Solo si pertenece al usuario autenticado
+        userId,
       },
     });
 
@@ -71,7 +69,7 @@ export const createPatient = async (
     const existingPatient = await prisma.patient.findFirst({
       where: {
         curp: validatedData.curp,
-        userId, // Solo verificar duplicados dentro del mismo usuario
+        userId,
       },
     });
 
@@ -82,17 +80,21 @@ export const createPatient = async (
       return;
     }
 
-    // Procesar archivo PDF si existe
+    // ✅ PROCESAR ARCHIVO PDF SIN SISTEMA DE ARCHIVOS
     let pdfData = null;
     let pdfName = null;
-    if (req.file) {
-      // Leer el archivo y convertirlo a base64
-      const fileBuffer = fs.readFileSync(req.file.path);
-      pdfData = fileBuffer.toString("base64");
-      pdfName = req.file.originalname;
 
-      // Eliminar el archivo temporal del disco
-      fs.unlinkSync(req.file.path);
+    if (req.file) {
+      try {
+        // Leer directamente del buffer de memoria
+        pdfData = req.file.buffer.toString("base64");
+        pdfName = req.file.originalname;
+        console.log(`📄 PDF procesado: ${pdfName} (${req.file.size} bytes)`);
+      } catch (pdfError) {
+        console.error("Error procesando PDF:", pdfError);
+        res.status(400).json({ error: "Error procesando el archivo PDF" });
+        return;
+      }
     }
 
     const patient = await prisma.patient.create({
@@ -101,7 +103,7 @@ export const createPatient = async (
         email: validatedData.email || null,
         pdfData,
         pdfName,
-        userId, // 🔥 ASOCIAR AL USUARIO AUTENTICADO
+        userId,
       },
     });
 
@@ -154,7 +156,7 @@ export const updatePatient = async (
         where: {
           curp: validatedData.curp,
           userId,
-          id: { not: parseInt(id) }, // Excluir el paciente actual
+          id: { not: parseInt(id) },
         },
       });
 
@@ -166,17 +168,21 @@ export const updatePatient = async (
       }
     }
 
-    // Procesar archivo PDF si existe
+    // ✅ PROCESAR ARCHIVO PDF SIN SISTEMA DE ARCHIVOS
     let pdfData = existingPatient.pdfData;
     let pdfName = existingPatient.pdfName;
-    if (req.file) {
-      // Leer el archivo y convertirlo a base64
-      const fileBuffer = fs.readFileSync(req.file.path);
-      pdfData = fileBuffer.toString("base64");
-      pdfName = req.file.originalname;
 
-      // Eliminar el archivo temporal del disco
-      fs.unlinkSync(req.file.path);
+    if (req.file) {
+      try {
+        // Leer directamente del buffer de memoria
+        pdfData = req.file.buffer.toString("base64");
+        pdfName = req.file.originalname;
+        console.log(`📄 PDF actualizado: ${pdfName} (${req.file.size} bytes)`);
+      } catch (pdfError) {
+        console.error("Error procesando PDF:", pdfError);
+        res.status(400).json({ error: "Error procesando el archivo PDF" });
+        return;
+      }
     }
 
     const { id: patientId, ...updateData } = validatedData;
@@ -188,7 +194,6 @@ export const updatePatient = async (
         email: updateData.email || null,
         pdfData,
         pdfName,
-        // No actualizar userId - debe mantenerse el original
       },
     });
 
