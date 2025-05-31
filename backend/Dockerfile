@@ -9,8 +9,8 @@ RUN apk add --no-cache postgresql-client
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Instalar TODAS las dependencias (incluyendo devDependencies para el build)
-RUN npm ci --include=dev
+# Instalar dependencias (incluyendo dev para desarrollo)
+RUN npm ci
 
 # Copiar prisma schema
 COPY prisma ./prisma/
@@ -21,17 +21,11 @@ RUN npx prisma generate
 # Copiar código fuente
 COPY src ./src
 
-# Compilar TypeScript
-RUN npm run build
-
 # Crear directorio uploads
 RUN mkdir -p uploads
 
-# Limpiar devDependencies después del build
-RUN npm ci --only=production && npm cache clean --force
-
 # Exponer puerto
-EXPOSE 10000
+EXPOSE 3001
 
-# Comando de inicio
-CMD ["npm", "run", "start:prod"]
+# 🔥 COMANDO PARA DESARROLLO CON WATCH
+CMD ["sh", "-c", "until pg_isready -h postgres -p 5432 -U postgres; do echo 'Waiting for PostgreSQL...'; sleep 2; done && echo 'PostgreSQL is ready!' && npm run dev"]
