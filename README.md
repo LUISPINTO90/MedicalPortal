@@ -134,16 +134,15 @@ medical-portal/
 
 - ✅ Programación de citas médicas
 - ✅ Estados: Pendiente, Realizada, Cancelada
-- ✅ Notificaciones y recordatorios
+- ✅ Recordatorios
 - ✅ Calendario visual interactivo
 - ✅ Gestión de disponibilidad
 
 ### 💊 Tratamientos Médicos
 
 - ✅ Registro de tratamientos por paciente
-- ✅ Estados: Activo, Completado, Suspendido
+- ✅ Estados: Activo e Inactivo
 - ✅ Seguimiento de medicamentos
-- ✅ Historial de evolución
 - ✅ Notas y observaciones médicas
 
 ### 🔐 Sistema de Autenticación
@@ -151,17 +150,13 @@ medical-portal/
 - ✅ Login seguro con JWT
 - ✅ Protección de rutas
 - ✅ Sesiones persistentes
-- ✅ Roles y permisos
-- ✅ Recuperación de contraseña
-
+- 
 ### 📊 Dashboard y Reportes
 
-- ✅ Estadísticas en tiempo real
-- ✅ Gráficos interactivos
-- ✅ Métricas de citas y pacientes
-- ✅ Reportes exportables
-- ✅ Indicadores de rendimiento
-
+- ✅ Estadísticas y gráficos
+- ✅ Historial de Tratamientos Recientes
+- ✅ Recordatorio de Próximas Citas
+  
 ## 🛠 Stack Tecnológico
 
 ### Backend
