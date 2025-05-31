@@ -1,15 +1,15 @@
-# backend/Dockerfile
 FROM node:18-alpine
 
 WORKDIR /app
 
-# Instalar dependencias del sistema necesarias
+# Instalar dependencias del sistema
 RUN apk add --no-cache postgresql-client
 
-# Copiar package.json y package-lock.json
+# Copiar package files
 COPY package*.json ./
+COPY tsconfig.json ./
 
-# Instalar dependencias (incluyendo dev para ts-node)
+# Instalar dependencias
 RUN npm ci
 
 # Copiar prisma schema
@@ -19,13 +19,16 @@ COPY prisma ./prisma/
 RUN npx prisma generate
 
 # Copiar código fuente
-COPY . .
+COPY src ./src
 
-# Crear directorio para uploads
+# Compilar TypeScript
+RUN npm run build
+
+# Crear directorio uploads
 RUN mkdir -p uploads
 
 # Exponer puerto
-EXPOSE 3001
+EXPOSE 10000
 
-# Solo iniciar el servidor, sin migraciones ni seed
-CMD ["sh", "-c", "until pg_isready -h postgres -p 5432 -U postgres; do echo 'Waiting for PostgreSQL...'; sleep 2; done && echo 'PostgreSQL is ready!' && npm run dev"]
+# Comando de inicio
+CMD ["npm", "run", "start:prod"]
