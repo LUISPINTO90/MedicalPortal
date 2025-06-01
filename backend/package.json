@@ -6,7 +6,7 @@
     "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "start:prod": "npx prisma db push && npm run db:seed && node dist/index.js",
+    "start:prod": "npx prisma db push && node dist/index.js",
     "db:seed": "ts-node src/seed.ts",
     "db:migrate": "npx prisma migrate dev",
     "db:push": "npx prisma db push",
