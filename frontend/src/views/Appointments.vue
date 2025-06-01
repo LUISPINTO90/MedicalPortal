@@ -504,11 +504,11 @@ export default class Appointments extends Vue {
   getStatusClasses(status: string): string {
     switch (status) {
       case "PENDIENTE":
-        return "bg-orange-100 text-orange-800 border-orange-200 hover:bg-orange-200 hover:border-orange-300";
+        return "bg-orange-400 text-orange-800 border-orange-200 hover:bg-orange-300 hover:border-orange-300";
       case "REALIZADA":
-        return "bg-green-600 text-green-800 border-green-200 hover:bg-green-500 hover:border-green-300";
+        return "bg-green-700 text-green-800 border-green-200 hover:bg-green-400 hover:border-green-300";
       case "CANCELADA":
-        return "bg-red-600 text-white border-red-700 hover:bg-red-400 hover:border-red-300";
+        return "bg-red-500 text-white border-red-700 hover:bg-red-400 hover:border-red-300";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200 hover:border-gray-300";
     }

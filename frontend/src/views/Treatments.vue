@@ -554,7 +554,7 @@ export default class Treatments extends Vue {
   // ⭐ MÉTODO PARA OBTENER LAS CLASES DE COLOR SEGÚN EL ESTADO
   getStatusClasses(isActive: boolean): string {
     if (isActive) {
-      return "bg-green-600 text-green-800 border-green-200 hover:bg-green-500";
+      return "bg-green-700 text-green-800 border-green-200 hover:bg-green-400";
     } else {
       return "bg-purple-500 text-gray-800 border-gray-200 hover:bg-purple-400";
     }
