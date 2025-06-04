@@ -1,3 +1,5 @@
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/LUISPINTO90/MedicalPortal)
+
 # 🏥 Portal Médico
 
 Sistema de gestión médica completo desarrollado con Vue 2, Node.js, PostgreSQL y Docker para administrar pacientes, citas y tratamientos de manera eficiente.
